@@ -1,0 +1,12 @@
+[project]
+name = "compass-telegram-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiogram>=3.29.1",
+    "dotenv>=0.9.9",
+    "getenv>=0.2.0",
+    "requests>=2.34.2",
+]
