@@ -33,7 +33,8 @@ def join_session(answers: dict,tid: int, session_id: int):
           "tid2": tid,
           "answer2": answers
         }
-    result = requests.post(url=URL + f"/session/{session_id}/join/by_id", headers=HEADERS, json=json).json()
+    result = requests.post(url=URL + f"/session/{session_id}/join/by_id",
+                           headers=HEADERS, json=json).json()
     return result.get("result")
 
 if __name__ == "__main__":

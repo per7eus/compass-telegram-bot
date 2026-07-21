@@ -9,7 +9,6 @@ from .keyboard import start_inline_keyboard, none_keyboard, choose_test_inline_k
 from .fms import Registration
 
 
-
 class Services:
     async def start(self,message: Message) -> None:
         create_user(message.from_user.id)
@@ -17,8 +16,8 @@ class Services:
 
     async def start_deep_link(self,message: Message,command: CommandObject,state: FSMContext) -> None:
         tests = get_all_test()
-        session_id, test_id = decode_payload(command.args).split("_")
-        await state.update_data(tests=tests.get(test_id),i=1, answers={},session_id=session_id)
+        session_id, test_id, user_id = decode_payload(command.args).split("_")
+        await state.update_data(tests=tests.get(test_id),i=1, answers={},session_id=session_id,user_id=user_id)
         await state.set_state(Registration.answer_to_questions1)
         await message.answer(f"Тест: {tests.get(test_id).get('name')}")
         await message.answer(f"Вопрос: {tests.get(test_id).get('questions').get('1')}")
@@ -55,7 +54,7 @@ class Services:
             session_id = create_session(answers=answers,
                                  tid=message.from_user.id,test_id=data.get("tests").get("id"))
             test_id = data.get("tests").get("id")
-            link = await create_start_link(message.bot, payload=f"{session_id}_{test_id}", encode=True)
+            link = await create_start_link(message.bot, payload=f"{session_id}_{test_id}_{message.from_user.id}", encode=True)
             await message.answer(f"Отлично, вы прошли тест\n Вот ссылка для {link}")
             await state.clear()
             return
@@ -78,6 +77,9 @@ class Services:
                                         tid=message.from_user.id, session_id=data.get("session_id"))
 
             await message.answer(f"Результат теста: {result}")
+            await message.bot.send_message(chat_id=data.get("user_id"),
+                                           text=f"Результат теста с пользователем {message.from_user.first_name}\n"
+                                                + result)
             await state.clear()
             return
 
