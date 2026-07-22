@@ -39,4 +39,4 @@ async def answer_to_questions(message: Message, state: FSMContext):
 
 @router.message(Registration.answer_to_questions1, F.text)
 async def answer_to_questions(message: Message, state: FSMContext):
-    await services.answer_to_questions1(message, state)
+    await services.answer_to_questions_friend(message, state)
