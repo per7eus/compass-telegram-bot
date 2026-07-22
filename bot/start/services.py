@@ -2,6 +2,8 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandObject
 from aiogram.utils.deep_linking import create_start_link, decode_payload
+from aiogram.enums import ChatAction
+
 from ..core.request import get_all_test, create_session, create_user, join_session
 
 from .keyboard import (start_inline_keyboard, none_keyboard,
@@ -88,10 +90,13 @@ class Services:
         answers = await self._save_state(message_text=message.text, state=state, data=data)
 
         if questions.get(str(int(data.get('i')) + 1)) == None:
+            message_edit = await message.answer("Ваши ответы обрабатываются, подождите")
+            await message.bot.send_chat_action(message.chat.id,ChatAction.TYPING)
+
             result = join_session(answers=answers,
                                             tid=message.from_user.id, session_id=data.get("session_id"))
 
-            await message.answer(f"Результат теста: {result}")
+            await message_edit.edit_text(f"Результат теста: {result}")
             await message.bot.send_message(chat_id=data.get("user_id"),
                                            text=f"Результат теста с пользователем"
                                                 f" {message.from_user.first_name}\n"
