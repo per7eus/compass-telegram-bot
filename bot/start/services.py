@@ -4,7 +4,7 @@ from aiogram.filters import CommandObject
 from aiogram.utils.deep_linking import create_start_link, decode_payload
 from ..core.request import get_all_test, create_session, create_user, join_session
 
-from .keyboard import start_inline_keyboard, none_keyboard, choose_test_inline_keyboard
+from .keyboard import start_inline_keyboard, none_keyboard, choose_test_inline_keyboard, creat_butten_links
 
 from .fms import Registration
 
@@ -55,7 +55,7 @@ class Services:
                                  tid=message.from_user.id,test_id=data.get("tests").get("id"))
             test_id = data.get("tests").get("id")
             link = await create_start_link(message.bot, payload=f"{session_id}_{test_id}_{message.from_user.id}", encode=True)
-            await message.answer(f"Отлично, вы прошли тест\n Вот ссылка для {link}")
+            await message.answer(f"Отлично, Вы прошли тест\nСкопируйте и пришлите эту ссылку другу, чтобы он смог пройти тест", reply_markup= await creat_butten_links(url=link))
             await state.clear()
             return
 
